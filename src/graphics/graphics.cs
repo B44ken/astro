@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Diagnostics;
 using Raylib_cs;
 
 class Graphics {
@@ -26,14 +24,16 @@ class Graphics {
 
         var entitiesCopy = new List<Entity>(physics.entities);
 
+        // foreach(var entity in entitiesCopy) {
+        //     var color = new Color(entity.color.R, entity.color.G, entity.color.B, entity.color.A);
+        //     var cameraPos = (entity.position - center) * zoom + resolution / 2;
+        //     Raylib.DrawCircle((int)cameraPos.x, (int)cameraPos.y, (float)(entity.radius * zoom), color);
+        // }
+
         foreach(var entity in entitiesCopy) {
-            var color = new Raylib_cs.Color(entity.color.R, entity.color.G, entity.color.B, entity.color.A);
-
-            // var cameraPos = (entity.position - (center - resolution / zoom / 2)) * zoom;
-            // simplify above to:
             var cameraPos = (entity.position - center) * zoom + resolution / 2;
-
-            Raylib.DrawCircle((int)cameraPos.x, (int)cameraPos.y, (float)(entity.radius * zoom), color);
+            if(entity.sprite != null)
+                entity.sprite.draw(cameraPos.x, cameraPos.y, zoom);
         }
 
         for(int i = 0; i < logs.Count; i++) {

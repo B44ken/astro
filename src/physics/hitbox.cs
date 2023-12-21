@@ -1,8 +1,5 @@
-using System.Diagnostics;
-using System.Numerics;
-
 interface Hitbox {
-    
+    bool Collides(Entity otherEntity);
 }
 
 class HitboxCircle : Hitbox {
@@ -12,12 +9,13 @@ class HitboxCircle : Hitbox {
         this.parent = parent;
     }
 
-    public bool Collides(Entity otherEntity) {
-        var other = otherEntity.hitbox as HitboxCircle;
-        if (other == null) return false;
-        var dist = (parent.position - other.parent.position).Size();
-        var minDist = (parent.radius + other.parent.radius);
-
-        return dist < minDist;
+    public bool Collides(Entity other) {
+        if(other.hitbox is HitboxCircle) {
+            if (other == null) return false;
+            var dist = (parent.position - other.position).Size();
+            var minDist = parent.radius + other.radius;
+            return dist < minDist;
+        }
+        else return false;
     }
 }

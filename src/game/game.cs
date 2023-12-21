@@ -10,7 +10,7 @@ class Game {
         graphics = new Graphics();
     }
 
-    public void StartLoop() {
+    public void Start() {
         bool running = true;
 
         var physicsTime = Stopwatch.StartNew();
@@ -35,13 +35,13 @@ class Game {
                 if(Raylib.IsKeyDown(KeyboardKey.KEY_Z))
                     graphics.zoom *= Math.Pow(2, poll);
                 
-                if(Raylib.IsKeyDown(KeyboardKey.KEY_W))
+                if(Raylib.IsKeyDown(KeyboardKey.KEY_UP))
                     graphics.center.y -= 600 * poll / graphics.zoom;
-                if(Raylib.IsKeyDown(KeyboardKey.KEY_S))
+                if(Raylib.IsKeyDown(KeyboardKey.KEY_DOWN))
                     graphics.center.y += 600 * poll / graphics.zoom;
-                if(Raylib.IsKeyDown(KeyboardKey.KEY_A))
+                if(Raylib.IsKeyDown(KeyboardKey.KEY_LEFT))
                     graphics.center.x -= 600 * poll / graphics.zoom;
-                if(Raylib.IsKeyDown(KeyboardKey.KEY_D))
+                if(Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT))
                     graphics.center.x += 600 * poll / graphics.zoom;
                 
                 Thread.Sleep((int)(poll * 1000));

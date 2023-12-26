@@ -2,15 +2,28 @@ using System.Diagnostics;
 using Raylib_cs;
 
 class Game {
-    public Physics physics;
-    public Graphics graphics;
+    public Physics physics = new Physics();
+    public Graphics? graphics;
+    public GameServer? server;
+    public GameClient? client;
+    public bool doGraphics = true;
 
     public Game() {
-        physics = new Physics();
-        graphics = new Graphics();
+    }
+
+    public async void Serve() {
+        server = new GameServer(this);
+        server.Start();
+    }
+
+    public async void Connect(string ip) {
+        client = new GameClient(this);
+        client.Connect(ip);
+        client.Listen();
     }
 
     public void Start() {
+        if(doGraphics) graphics = new Graphics();
         bool running = true;
 
         var physicsTime = Stopwatch.StartNew();
@@ -50,7 +63,7 @@ class Game {
 
         // graphics must be run on the main thread
         while(running) {
-            graphics.Render(physics, 0);
+            if(doGraphics) graphics.Render(physics, 0);
         }
 
     }

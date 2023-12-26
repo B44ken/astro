@@ -24,12 +24,6 @@ class Graphics {
 
         var entitiesCopy = new List<Entity>(physics.entities);
 
-        // foreach(var entity in entitiesCopy) {
-        //     var color = new Color(entity.color.R, entity.color.G, entity.color.B, entity.color.A);
-        //     var cameraPos = (entity.position - center) * zoom + resolution / 2;
-        //     Raylib.DrawCircle((int)cameraPos.x, (int)cameraPos.y, (float)(entity.radius * zoom), color);
-        // }
-
         foreach(var entity in entitiesCopy) {
             var cameraPos = (entity.position - center) * zoom + resolution / 2;
             if(entity.sprite != null)

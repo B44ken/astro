@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Raylib_cs;
 
 interface Drawable {
@@ -23,7 +22,6 @@ class Sprite : Drawable {
     public void draw(double x, double y, double scale) {
         var screenScale = width * scale / texture.Width;
         var rayPos = new System.Numerics.Vector2((float)(x - width*2), (float)(y - height*2));
-        Debug.WriteLine($"Drawing sprite at {rayPos.X}, {rayPos.Y} with scale {screenScale}");
         Raylib.DrawTextureEx(texture, rayPos, 0, (float)screenScale, Raylib_cs.Color.WHITE);
     }
 }

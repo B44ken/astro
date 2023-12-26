@@ -10,7 +10,7 @@ class Physics {
     public void AddEntity(Entity entity) {
         pendingEntities.Add(entity);
         if(broadcaster != null) {
-            broadcaster.Broadcast(GameClient.SerializeEntity(entity));
+            broadcaster.Broadcast(GameClient.Serialize(entity));
         }
     }
 
@@ -43,7 +43,7 @@ class Physics {
                         continue;
 
                     // elastic collision accounting for mass and velocity
-                    var normal = (other.position - entity.position).Normal();
+                    var normal = (other.position - entity.position).Unit();
                     var v1 = entity.velocity;
                     var v2 = other.velocity;
                     var m1 = entity.mass;
@@ -65,7 +65,7 @@ class Physics {
                 if(entity == other) continue;
                 var pos = (other.position - entity.position);
                 var dV = dt * G * other.mass / Math.Pow(pos.Size(), 2);
-                entity.velocity += pos.Normal() * dV;
+                entity.velocity += pos.Unit() * dV;
             }
         }
     }

@@ -1,113 +1,121 @@
-class Vector : List<double> {
-    public Vector(params double[] values) {
-        foreach (double value in values) {
-            this.Add(value);
-        }
+using System.Text.Json.Serialization;
+
+class Vector {
+    public double[] values;
+
+    public Vector(params Double[] values) {
+        this.values = values;
+        // foreach (double value in values) {
+        //     this.values.Add(value);
+        // }
     }
 
+    [JsonIgnore]
     public double x {
-        get { return (double)this[0]; }
-        set { this[0] = value; }
+        get { return values[0]; }
+        set { values[0] = value; }
     }
 
+    [JsonIgnore]
     public double y {
-        get { return (double)this[1]; }
-        set { this[1] = value; }
+        get { return values[1]; }
+        set { values[1] = value; }
     }
     
+    [JsonIgnore]
     public double z {
-        get { return (double)this[2]; }
-        set { this[2] = value; }
+        get { return values[2]; }
+        set { values[2] = value; }
     }
 
     static public Vector operator +(Vector a, Vector b) {
-        if(a.Count != b.Count) 
+        if(a.values.Length != b.values.Length) 
             throw new System.Exception("Vectors must be of the same length");
 
         Vector result = new Vector();
-        for(int i = 0; i < a.Count; i++)
-            result.Add(a[i] + b[i]);
+        for(int i = 0; i < a.values.Length; i++)
+            result.values.Add(a.values[i] + b.values[i]);
 
         return result;
     }
 
     static public Vector operator -(Vector a, Vector b) {
-        if(a.Count != b.Count) 
+        if(a.values.Length != b.values.Length) 
             throw new System.Exception("Vectors must be of the same length");
 
         Vector result = new Vector();
-        for(int i = 0; i < a.Count; i++)
-            result.Add(a[i] - b[i]);
+        for(int i = 0; i < a.values.Length; i++)
+            result.values.Add(a.values[i] - b.values[i]);
 
         return result;
     }
 
     static public Vector operator -(Vector a) {
         Vector result = new Vector();
-        for(int i = 0; i < a.Count; i++)
-            result.Add(-a[i]);
+        for(int i = 0; i < a.values.Length; i++)
+            result.values.Add(-a.values[i]);
 
         return result;
     }
 
     static public double operator *(Vector a, Vector b) {
         // dot product
-        if(a.Count != b.Count) 
+        if(a.values.Length != b.values.Length) 
             throw new System.Exception("Vectors must be of the same length");
 
         double result = 0;
-        for(int i = 0; i < a.Count; i++)
-            result += a[i] * b[i];
+        for(int i = 0; i < a.values.Length; i++)
+            result += a.values[i] * b.values[i];
 
         return result;
     }
 
     static public Vector operator *(Vector a, double b) {
         Vector result = new Vector();
-        for(int i = 0; i < a.Count; i++)
-            result.Add(a[i] * b);
+        for(int i = 0; i < a.values.Length; i++)
+            result.values[i] = a.values[i] * b;
 
         return result;
     }
 
     static public Vector operator *(double a, Vector b) {
         Vector result = new Vector();
-        for(int i = 0; i < b.Count; i++)
-            result.Add(a * b[i]);
+        for(int i = 0; i < b.values.Length; i++)
+            result.values[i] = a * b.values[i];
 
         return result;
     }
 
     static public Vector operator /(Vector a, double b) {
         Vector result = new Vector();
-        for(int i = 0; i < a.Count; i++)
-            result.Add(a[i] / b);
+        for(int i = 0; i < a.values.Length; i++)
+            result.values[i] = a.values[i] / b;
 
         return result;
     }
 
     static public Vector operator /(double a, Vector b) {
         Vector result = new Vector();
-        for(int i = 0; i < b.Count; i++)
-            result.Add(a / b[i]);
+        for(int i = 0; i < b.values.Length; i++)
+            result.values[i] = a / b.values[i];
 
         return result;
     }
 
     public double Size() {
         double result = 0;
-        foreach(double value in this)
+        foreach(double value in values)
             result += value * value;
 
         return System.Math.Sqrt(result);
     }
 
-    public Vector Normal() {
+    public Vector Unit() {
         return this / this.Size();
     }
 
     public Vector Rotate(double theta) {
-        if(this.Count != 2)
+        if(values.Length != 2)
             throw new System.Exception("Can only rotate 2D vectors");
 
         double x = this.x * Math.Cos(theta) - this.y * Math.Sin(theta);
@@ -122,7 +130,7 @@ class Vector : List<double> {
 
     public string ToString(int digits) {
         string result = "<";
-        foreach(double value in this) {
+        foreach(double value in values) {
             if(value > 0)
                 result += " ";
             result += value.ToString($"F{digits}") + ", ";

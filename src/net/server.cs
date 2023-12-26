@@ -2,10 +2,12 @@ using System.Net;
 using System.Net.Sockets;
 
 class GameServer {
+        Game game;
         TcpListener listener;
         List<TcpClient?> clients = [];
 
-        public GameServer() {
+        public GameServer(Game game) {
+            this.game = game;
             listener = new TcpListener(new IPAddress(0), 4153);
             listener.Start();
         }
@@ -25,12 +27,23 @@ class GameServer {
             }
         }
 
+        public void BroadcastTo(TcpClient client, string message) {
+            try {
+                var writer = new StreamWriter(client.GetStream()) {
+                    AutoFlush = true
+                };
+                writer.WriteLine(message);
+            } catch (IOException) {}
+        }
+
         public void Start() {
             while (true) {
                 var client = listener.AcceptTcpClient();
                 clients.Add(client);
-                Console.WriteLine("Client connected");
-                Broadcast("Client connected");
+                var entities = game.physics.entities;
+                foreach (var entity in game.physics.entities) {
+                    BroadcastTo(client, GameClient.Serialize(entity) + "");
+                }
             }
         }
 }

@@ -20,7 +20,7 @@ class Astronaut : Entity {
     }
 
     public void Jump() {
-        var normal = (position - attached.position).Normal();
+        var normal = (position - attached.position).Unit();
         position += normal * 0.2;
         velocity += normal * jumpSpeed;
         Console.WriteLine($"Jumped from {attached.position}");

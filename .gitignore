@@ -1,3 +1,4 @@
 astro.csproj
-bin/*
-obj/*
+bin
+bin2
+obj

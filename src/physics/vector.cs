@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 
 class Vector {
-    public double[] values;
+    public List<double> values = [];
 
-    public Vector(params Double[] values) {
-        this.values = values;
+    public Vector(params double[] values) {
+        this.values = values.ToList();
         // foreach (double value in values) {
         //     this.values.Add(value);
         // }
@@ -29,22 +29,22 @@ class Vector {
     }
 
     static public Vector operator +(Vector a, Vector b) {
-        if(a.values.Length != b.values.Length) 
+        if(a.values.Count != b.values.Count) 
             throw new System.Exception("Vectors must be of the same length");
 
         Vector result = new Vector();
-        for(int i = 0; i < a.values.Length; i++)
+        for(int i = 0; i < a.values.Count; i++)
             result.values.Add(a.values[i] + b.values[i]);
 
         return result;
     }
 
     static public Vector operator -(Vector a, Vector b) {
-        if(a.values.Length != b.values.Length) 
+        if(a.values.Count != b.values.Count) 
             throw new System.Exception("Vectors must be of the same length");
 
         Vector result = new Vector();
-        for(int i = 0; i < a.values.Length; i++)
+        for(int i = 0; i < a.values.Count; i++)
             result.values.Add(a.values[i] - b.values[i]);
 
         return result;
@@ -52,7 +52,7 @@ class Vector {
 
     static public Vector operator -(Vector a) {
         Vector result = new Vector();
-        for(int i = 0; i < a.values.Length; i++)
+        for(int i = 0; i < a.values.Count; i++)
             result.values.Add(-a.values[i]);
 
         return result;
@@ -60,11 +60,11 @@ class Vector {
 
     static public double operator *(Vector a, Vector b) {
         // dot product
-        if(a.values.Length != b.values.Length) 
+        if(a.values.Count != b.values.Count) 
             throw new System.Exception("Vectors must be of the same length");
 
         double result = 0;
-        for(int i = 0; i < a.values.Length; i++)
+        for(int i = 0; i < a.values.Count; i++)
             result += a.values[i] * b.values[i];
 
         return result;
@@ -72,7 +72,7 @@ class Vector {
 
     static public Vector operator *(Vector a, double b) {
         Vector result = new Vector();
-        for(int i = 0; i < a.values.Length; i++)
+        for(int i = 0; i < a.values.Count; i++)
             result.values[i] = a.values[i] * b;
 
         return result;
@@ -80,7 +80,7 @@ class Vector {
 
     static public Vector operator *(double a, Vector b) {
         Vector result = new Vector();
-        for(int i = 0; i < b.values.Length; i++)
+        for(int i = 0; i < b.values.Count; i++)
             result.values[i] = a * b.values[i];
 
         return result;
@@ -88,7 +88,7 @@ class Vector {
 
     static public Vector operator /(Vector a, double b) {
         Vector result = new Vector();
-        for(int i = 0; i < a.values.Length; i++)
+        for(int i = 0; i < a.values.Count; i++)
             result.values[i] = a.values[i] / b;
 
         return result;
@@ -96,7 +96,7 @@ class Vector {
 
     static public Vector operator /(double a, Vector b) {
         Vector result = new Vector();
-        for(int i = 0; i < b.values.Length; i++)
+        for(int i = 0; i < b.values.Count; i++)
             result.values[i] = a / b.values[i];
 
         return result;
@@ -115,7 +115,7 @@ class Vector {
     }
 
     public Vector Rotate(double theta) {
-        if(values.Length != 2)
+        if(values.Count != 2)
             throw new System.Exception("Can only rotate 2D vectors");
 
         double x = this.x * Math.Cos(theta) - this.y * Math.Sin(theta);
@@ -138,5 +138,4 @@ class Vector {
 
         return result.Substring(0, result.Length - 2) + ">";
     }
-
 }

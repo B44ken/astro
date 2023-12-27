@@ -27,7 +27,7 @@ class Graphics {
         foreach(var entity in entitiesCopy) {
             var cameraPos = (entity.position - center) * zoom + resolution / 2;
             if(entity.sprite != null)
-                entity.sprite.draw(cameraPos.x, cameraPos.y, zoom);
+                entity.sprite.Draw(cameraPos.x, cameraPos.y, zoom);
         }
 
         for(int i = 0; i < logs.Count; i++) {
@@ -38,8 +38,9 @@ class Graphics {
     }
 
     public void RaylibInit() {
+        Raylib.SetTraceLogLevel(TraceLogLevel.LOG_FATAL);
         Raylib.InitWindow((int)resolution.x, (int)resolution.y, "raylib");
-        Raylib.SetTargetFPS(144);
+        Raylib.SetTargetFPS(1000);
     }
 
 }

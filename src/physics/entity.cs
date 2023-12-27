@@ -10,6 +10,7 @@ class Entity {
     public Drawable sprite = new Circle(10, Color.White);
     public Vector position = new Vector(0, 0);
     public Vector velocity = new Vector(0, 0);
+    public Input input;
 
     public Entity() {
         hitbox = new HitboxCircle(this);

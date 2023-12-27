@@ -1,3 +1,5 @@
+#pragma warning disable 8602
+
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -12,10 +14,15 @@ class GameClient {
         this.game = game;
     }
 
-    public void Connect(string ip) {
+    public bool Connect(string ip) { 
         socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
         var localhost = Dns.GetHostEntry(ip).AddressList[0];
-        socket.Connect(localhost, 4153);
+        try {
+            socket.Connect(localhost, 4153);
+            return true;
+        } catch(SocketException) {
+            return false;
+        }
     }
 
     public void Listen() {
@@ -34,21 +41,46 @@ class GameClient {
     }
 
     public void Receive(string message) {
-        Console.WriteLine("recieved ");
         var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(message);
         if(dict == null) return;
         if(dict["type"].ToString() == "entity") {
-            Console.WriteLine(dict["entity"].ToString());
-            var entity = JsonSerializer.Deserialize<Entity>(dict["entity"]?.ToString() ?? "?");
+            var entity = JsonSerializer.Deserialize<Entity>(dict["entity"]?.ToString() ?? "");
+            if(entity == null) throw new Exception("Failed to deserialize entity");
+            entity = PatchPosition(entity, message);
+            entity = PatchVelocity(entity, message);
             if(entity == null) return;
-            Console.WriteLine("recieved entity");
             game.physics.AddEntity(entity);
         }
-        if(dict["type"].ToString() == "vector") {
-            var vector = JsonSerializer.Deserialize<Vector>(dict["vector"]?.ToString() ?? "?");
-            if(vector == null) return;
-            Console.WriteLine("recieved vector " + vector.ToString());
+    }
+
+    public Dictionary<string, object> Traverse(string message, string path) {
+        try {
+            var dict = JsonSerializer.Deserialize<Dictionary<string, object>>(message);
+            foreach(var key in path.Split(".")) {
+                dict = JsonSerializer.Deserialize<Dictionary<string, object>>(dict[key]?.ToString() ?? "");
+            }
+            if(dict == null) throw new Exception($"Failed to traverse: {path}");
+            return dict;
+        } catch(Exception e) {
+            throw new Exception($"Failed to traverse: {path}", e);
         }
+    }
+
+    public Entity PatchPosition(Entity entity, string message) {
+        var dict = Traverse(message, "entity.position.values");
+        var vstring = dict["$values"].ToString();
+        if(vstring == null) throw new Exception("Failed to patch position");
+        var values = vstring.Substring(1, vstring.Length - 2).Split(",");
+        entity.position = new Vector(double.Parse(values[0]), double.Parse(values[1]));
+        return entity;
+    }
+
+    public Entity PatchVelocity(Entity entity, string message) {
+        var dict = Traverse(message, "entity.velocity.values");
+        var vstring = dict["$values"].ToString();
+        var values = vstring.Substring(1, vstring.Length - 2).Split(",");
+        entity.velocity = new Vector(double.Parse(values[0]), double.Parse(values[1]));
+        return entity;
     }
 
     public static string Serialize(Entity entity) {

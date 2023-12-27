@@ -73,7 +73,7 @@ class Vector {
     static public Vector operator *(Vector a, double b) {
         Vector result = new Vector();
         for(int i = 0; i < a.values.Count; i++)
-            result.values[i] = a.values[i] * b;
+            result.values.Add(a.values[i] * b);
 
         return result;
     }
@@ -81,7 +81,7 @@ class Vector {
     static public Vector operator *(double a, Vector b) {
         Vector result = new Vector();
         for(int i = 0; i < b.values.Count; i++)
-            result.values[i] = a * b.values[i];
+            result.values.Add(a * b.values[i]);
 
         return result;
     }
@@ -89,7 +89,7 @@ class Vector {
     static public Vector operator /(Vector a, double b) {
         Vector result = new Vector();
         for(int i = 0; i < a.values.Count; i++)
-            result.values[i] = a.values[i] / b;
+            result.values.Add(a.values[i] / b);
 
         return result;
     }
@@ -97,7 +97,7 @@ class Vector {
     static public Vector operator /(double a, Vector b) {
         Vector result = new Vector();
         for(int i = 0; i < b.values.Count; i++)
-            result.values[i] = a / b.values[i];
+            result.values.Add(a / b.values[i]);
 
         return result;
     }
@@ -131,9 +131,9 @@ class Vector {
     public string ToString(int digits) {
         string result = "<";
         foreach(double value in values) {
-            if(value > 0)
-                result += " ";
+            if(value > 0) digits++;
             result += value.ToString($"F{digits}") + ", ";
+            if(value > 0) digits--;
         }
 
         return result.Substring(0, result.Length - 2) + ">";

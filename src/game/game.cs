@@ -1,3 +1,5 @@
+#pragma warning disable 8602
+
 using System.Diagnostics;
 using Raylib_cs;
 
@@ -6,26 +8,34 @@ class Game {
     public Graphics? graphics;
     public GameServer? server;
     public GameClient? client;
+    public Astronaut? player;
     public bool doGraphics = true;
 
     public Game() {
     }
 
-    public async void Serve() {
+    public void Serve() {
         server = new GameServer(this);
         server.Start();
     }
 
-    public async void Connect(string ip) {
+    public void Log(string message) {
+        graphics?.Log(message);
+        Console.WriteLine(message);
+    }
+
+    public bool Connect(string ip) {
         client = new GameClient(this);
-        client.Connect(ip);
-        client.Listen();
+        var res = client.Connect(ip);
+        if(res) client.Listen();
+        return res;
     }
 
     public void Start() {
         if(doGraphics) graphics = new Graphics();
         bool running = true;
 
+        // physics
         var physicsTime = Stopwatch.StartNew();
         double lastPhysics = 0;
         Task.Run(() => {
@@ -36,9 +46,21 @@ class Game {
             }
         });
 
+        // input
         Task.Run(() => {
+            
             var poll = 0.01;
-            while(running) {
+            
+            while(running && doGraphics && player != null) {
+                player.input.Update(player);
+                player.Walk(poll);
+                foreach(Entity entity in physics.entities) {
+                    if(entity is ResourceFactory resource) {
+                        if(!player.input.Pressed("interact")) continue;
+                        resource.Interact(player, this);
+                    }
+                }
+                
                 if(Raylib.IsKeyDown(KeyboardKey.KEY_ESCAPE))
                     running = false;
                 
@@ -56,6 +78,7 @@ class Game {
                     graphics.center.x -= 600 * poll / graphics.zoom;
                 if(Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT))
                     graphics.center.x += 600 * poll / graphics.zoom;
+                
                 
                 Thread.Sleep((int)(poll * 1000));
             }

@@ -1,6 +1,8 @@
-﻿#pragma warning disable
-
-using System.Diagnostics;
+﻿// throughout the code, in some files:
+// CS8602, dereferencing a possibly null reference, is disabled due to false positives
+// CS4104, async function runs asynchrously, is disabled because it is intended behaviour
+#pragma warning disable 4014
+using System.Drawing;
 
 List<string> arguments = [];
 foreach(var arg in Environment.GetCommandLineArgs().ToList()) {
@@ -8,62 +10,34 @@ foreach(var arg in Environment.GetCommandLineArgs().ToList()) {
     arguments.Add(arg);
 }
 
-Game game;
-if(arguments.Contains("-server")) {
-    game = new Game() {
-        doGraphics = false
-    };
-    Task.Run(game.Serve);
-    var planetA = new Entity() {
-        canMove = false,
-        mass = 5e11,
-        radius = 100,
-        position = new Vector(-150, 0),
-        sprite = new Circle(100, System.Drawing.Color.Blue),
-    };
-    var astro = new Astronaut() {
-        position = planetA.position + new Vector(planetA.radius + 20, 0),
-        radius = 12,
-        sprite = new Circle(12, System.Drawing.Color.White),
-    };
-    var planetB = new Entity() {
-        canMove = false,
-        mass = 5e11,
-        radius = 50,
-        position = new Vector(150, 0),
-        sprite = new Circle(50, System.Drawing.Color.Green),
-    };
-    var keyboard1 = new AstronautKeyboard() {
-        parent = astro,
-    };
+var game = new Game();
 
-    game.physics.AddEntity(new List<Entity> {
-        planetA, planetB, astro
-    });
+var planet = new Entity() {
+    canMove = false,
+    mass = 1e12,
+    radius = 100,
+    position = new Vector(0, 0),
+    sprite = new Circle(100, Color.Blue),
+};
 
-    Task.Run(() => {
-        while (true) {
-            var old = astro.position;
-            double dt = 1.0/60;
-            keyboard1.Update();
-            astro.Walk(dt);
-            var delta = astro.position - old;
-            Thread.Sleep((int)(1000 * dt));
-        }
-    });
+var player = new Astronaut() {
+    mass = 100,
+    radius = 10,
+    position = new Vector(0, -110),
+    sprite = new Circle(10, Color.WhiteSmoke),
+    input = new Keyboard()
+};
+game.player = player;
 
-    game.Start();
-} else {
-    game = new Game();
-    Task.Run(() => game.Connect("127.0.0.1"));
-    Task.Run(() => {
-        while(true) {
-            Thread.Sleep(200);
-            game.graphics?.Log($"n_entities = {game.physics.entities.Count}");
-            if(game.physics.entities.Count > 0) {
-                Console.WriteLine(game.physics.entities[0].position);
-            }
-        }
-    });
-    game.Start();
-}
+var factory = new ResourceFactory() {
+    canMove = false,
+    position = new Vector(0, 115),
+    sprite = new Square(30, System.Drawing.Color.DarkGray),
+    resource = "Iron",
+};
+
+game.physics.AddEntity(new List<Entity> {
+    planet, player, factory
+});
+
+game.Start();

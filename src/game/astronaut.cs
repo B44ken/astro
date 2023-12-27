@@ -1,6 +1,7 @@
 class Astronaut : Entity {
     public Entity? attached;
     Entity? jumpedFrom;
+    public Inventory inventory = new Inventory();
     public double walkSpeed = 100;
     public double jumpSpeed = 100;
     public double walkDirection = 0;
@@ -14,16 +15,18 @@ class Astronaut : Entity {
         if(attached == null) return;
         // i have no clue why this errors
         try {
-            var rad = walkDirection * walkSpeed * dt / attached.radius;
-            position = (position - attached.position).Rotate(rad) + attached.position;
+            var attachedCopy = attached;
+            var rad = walkDirection * walkSpeed * dt / attachedCopy.radius;
+            position = (position - attachedCopy.position).Rotate(rad) + attachedCopy.position;
         } catch (NullReferenceException) { }
     }
 
     public void Jump() {
+        if(attached == null) return;
+
         var normal = (position - attached.position).Unit();
         position += normal * 0.2;
         velocity += normal * jumpSpeed;
-        Console.WriteLine($"Jumped from {attached.position}");
         attached = null;
         canMove = true;
         jumpedFrom = attached;

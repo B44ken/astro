@@ -1,27 +1,41 @@
+using System.Diagnostics;
 using Raylib_cs;
 
-class AstronautKeyboard {
-    public Astronaut? parent;
-    Dictionary<string, KeyboardKey> keys = [];
+interface Input {
+    public bool Pressed(string button);
+    public void Update(Astronaut astronaut);
+}
 
-    public AstronautKeyboard() {
-        keys["right"] = KeyboardKey.KEY_A;
-        keys["left"] = KeyboardKey.KEY_D;
+class Keyboard : Input {
+    Dictionary<string, KeyboardKey> keys = [];
+    
+    public bool Pressed(string button) {
+        return Raylib.IsKeyDown(keys[button]);
     }
 
-    public void Update() {
-        if(parent == null)
-            return;
+    public Keyboard() {
+        keys["moveRight"] = KeyboardKey.KEY_A;
+        keys["moveLeft"] = KeyboardKey.KEY_D;
+        keys["jump"] = KeyboardKey.KEY_W;
+        keys["interact"] = KeyboardKey.KEY_SPACE;
+        keys["cameraLeft"] = KeyboardKey.KEY_LEFT;
+        keys["cameraRight"] = KeyboardKey.KEY_RIGHT;
+        keys["cameraUp"] = KeyboardKey.KEY_UP;
+        keys["cameraDown"] = KeyboardKey.KEY_DOWN;
+        keys["cameraZoomIn"] = KeyboardKey.KEY_Z;
+        keys["cameraZoomOut"] = KeyboardKey.KEY_X;
+        keys["keyExit"] = KeyboardKey.KEY_ESCAPE;
+    }
 
-        if(Raylib.IsKeyDown(keys["right"]))
-            parent.walkDirection = -1;
-        else if(Raylib.IsKeyDown(keys["left"]))
-            parent.walkDirection = 1;
+    public void Update(Astronaut astronaut) {
+        if(Pressed("moveRight"))
+            astronaut.walkDirection = -1;
+        else if(Pressed("moveLeft"))
+            astronaut.walkDirection = 1;
         else
-            parent.walkDirection = 0;
+            astronaut.walkDirection = 0;
 
-        if(Raylib.IsKeyDown(KeyboardKey.KEY_W) && parent.attached != null) {
-            parent.Jump();
-        }
+        if(Pressed("jump"))
+            astronaut.Jump();
     }
 }

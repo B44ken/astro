@@ -1,3 +1,5 @@
+#pragma warning disable 8602
+
 using System.Net;
 using System.Net.Sockets;
 

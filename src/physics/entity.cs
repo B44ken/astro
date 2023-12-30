@@ -21,6 +21,7 @@ class Entity {
     }
 
     public void Move(double dt) {
+        if(!canMove) return;
         position += velocity * dt;
         rotation += angularVelocity * dt;
     }

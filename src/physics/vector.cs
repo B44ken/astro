@@ -102,16 +102,15 @@ class Vector {
         return result;
     }
 
-    public double Size() {
-        double result = 0;
-        foreach(double value in values)
-            result += value * value;
-
-        return System.Math.Sqrt(result);
+    public double Length {
+        get {
+            return Math.Sqrt(values.ConvertAll(d => d*d).Sum());
+        }
+        
     }
 
     public Vector Unit() {
-        return this / this.Size();
+        return this / this.Length;
     }
 
     public Vector Rotate(double theta) {

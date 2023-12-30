@@ -6,15 +6,13 @@ class Physics {
     private List<Entity> pendingEntities = new List<Entity>();
     public GameServer? broadcaster;
     
-    public void AddEntity(Entity entity) {
-        pendingEntities.Add(entity);
-        if(broadcaster != null) {
-            broadcaster.Broadcast(GameClient.Serialize(entity));
+    public void AddEntity(params Entity[] entities) {
+        foreach(Entity entity in entities) {
+            pendingEntities.Add(entity);
+            if(broadcaster != null) {
+                broadcaster.Broadcast(GameClient.Serialize(entity));
+            }
         }
-    }
-
-    public void AddEntity(List<Entity> entities) {
-        pendingEntities.AddRange(entities);
     }
 
     public void Tick(double dt) {
@@ -56,14 +54,14 @@ class Physics {
         }
     }
 
-    public double G = 1e-6;
+    public double G = 1e-4;
     public void Gravity(double dt) {
         foreach (Entity entity in entities) {
             if(!entity.canMove) continue;
             foreach (Entity other in entities) {
                 if(entity == other) continue;
                 var pos = (other.position - entity.position);
-                var dV = dt * G * other.mass / Math.Pow(pos.Size(), 2);
+                var dV = dt * G * other.mass / Math.Pow(pos.Length, 2);
                 entity.velocity += pos.Unit() * dV;
             }
         }

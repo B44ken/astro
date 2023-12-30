@@ -11,9 +11,6 @@ class Game {
     public Astronaut? player;
     public bool doGraphics = true;
 
-    public Game() {
-    }
-
     public void Serve() {
         server = new GameServer(this);
         server.Start();
@@ -23,7 +20,11 @@ class Game {
         graphics?.Log(message);
         Console.WriteLine(message);
     }
-
+    
+    public void AddEntity(Entity entity) {
+        physics.AddEntity(entity);
+    }
+    
     public bool Connect(string ip) {
         client = new GameClient(this);
         var res = client.Connect(ip);
@@ -85,9 +86,7 @@ class Game {
         });
 
         // graphics must be run on the main thread
-        while(running) {
-            if(doGraphics) graphics.Render(physics, 0);
-        }
-
+        while(running)
+            if(doGraphics) graphics.Render(physics);
     }
 }

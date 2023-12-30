@@ -1,4 +1,5 @@
 astro.csproj
+.idea
 bin
 bin2
 obj

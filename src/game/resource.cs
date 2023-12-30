@@ -10,7 +10,7 @@
     }
 
     public bool Interact(Astronaut user, Game game) {
-        var distance = (user.position - position).Size();
+        var distance = (user.position - position).Length;
         if(distance > range) return false;
         
         var delta = (DateTime.Now - lastUsed).TotalSeconds;

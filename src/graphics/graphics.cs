@@ -17,7 +17,7 @@ class Graphics {
             logs.RemoveAt(0);
     }
 
-    public void Render(Physics physics, double dt) {
+    public void Render(Physics physics) {
         Raylib.BeginDrawing();
 
         Raylib.ClearBackground(Color.BLACK);

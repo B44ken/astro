@@ -13,11 +13,11 @@ class Astronaut : Entity {
 
     public void Walk(double dt) {
         if(attached == null) return;
-        // i have no clue why this errors
         try {
-            var attachedCopy = attached;
-            var rad = walkDirection * walkSpeed * dt / attachedCopy.radius;
-            position = (position - attachedCopy.position).Rotate(rad) + attachedCopy.position;
+            var oldPos = position;
+            var rad = walkDirection * walkSpeed * dt / attached.radius;
+            position = (position - attached.position).Rotate(rad) + attached.position;
+            velocity = (position - oldPos) / dt;
         } catch (NullReferenceException) { }
     }
 
@@ -36,8 +36,8 @@ class Astronaut : Entity {
         if(attached != null) return false;
         var snap = 0.5;
         foreach(var entity in entities) {
-            if(entity == jumpedFrom || entity is Astronaut) continue;
-            if((entity.position - position).Size() < entity.radius + radius + snap) {
+            if(entity == jumpedFrom || entity is Astronaut || entity.mass < 10_000) continue;
+            if((entity.position - position).Length < entity.radius + radius + snap) {
                 velocity = new Vector(0, 0);
                 attached = entity;
                 canMove = false;

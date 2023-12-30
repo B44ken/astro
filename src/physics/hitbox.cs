@@ -12,7 +12,7 @@ class HitboxCircle : Hitbox {
     public bool Collides(Entity other) {
         if(other.hitbox is HitboxCircle) {
             if (other == null) return false;
-            var dist = (parent.position - other.position).Size();
+            var dist = (parent.position - other.position).Length;
             var minDist = parent.radius + other.radius;
             return dist < minDist;
         }

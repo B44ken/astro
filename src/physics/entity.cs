@@ -7,10 +7,9 @@ class Entity {
     public double angularVelocity = 0;
     public bool canMove = true;
     public HitboxCircle hitbox;
-    public Drawable sprite = new Circle(10, Color.White);
+    public Drawable? sprite = new Circle(10, Color.White);
     public Vector position = new Vector(0, 0);
     public Vector velocity = new Vector(0, 0);
-    public Input input;
 
     public Entity() {
         hitbox = new HitboxCircle(this);

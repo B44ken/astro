@@ -1,11 +1,12 @@
 class Astronaut : Entity {
     public Entity? attached;
-    Entity? jumpedFrom;
+    public Entity? jumpedFrom;
+    public AstronautInput? input;
     public Inventory inventory = new Inventory();
     public double walkSpeed = 100;
-    public double jumpSpeed = 100;
+    public double jumpSpeed = 150;
     public double walkDirection = 0;
-    public bool shouldJump = false;
+
     public Astronaut() {
         mass = 100;
         sprite = new Circle(15, System.Drawing.Color.White);
@@ -22,8 +23,8 @@ class Astronaut : Entity {
     }
 
     public void Jump() {
-        if(attached == null) return;
-
+        if (attached == null) return;
+        
         var normal = (position - attached.position).Unit();
         position += normal * 0.2;
         velocity += normal * jumpSpeed;
@@ -32,17 +33,18 @@ class Astronaut : Entity {
         jumpedFrom = attached;
     }
 
+    public void Jetpack(double dt) { }
+
     public bool Attach(List<Entity> entities) {
         if(attached != null) return false;
-        var snap = 0.5;
+        var snap = 0.2;
         foreach(var entity in entities) {
-            if(entity == jumpedFrom || entity is Astronaut || entity.mass < 10_000) continue;
-            if((entity.position - position).Length < entity.radius + radius + snap) {
-                velocity = new Vector(0, 0);
-                attached = entity;
-                canMove = false;
-                return true;
-            }
+            if(entity == jumpedFrom || entity is Astronaut || entity.mass < 10_000 ||
+            (entity.position - position).Length < entity.radius + radius + snap) continue;
+            velocity = new Vector(0, 0);
+            attached = entity;
+            canMove = false;
+            return true;
         }
         return false;
     }

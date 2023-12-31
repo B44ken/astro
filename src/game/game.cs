@@ -8,7 +8,7 @@ class Game {
     public Graphics? graphics;
     public GameServer? server;
     public GameClient? client;
-    public Astronaut? player;
+    public Entity? player;
     public bool doGraphics = true;
 
     public void Serve() {
@@ -53,15 +53,25 @@ class Game {
             var poll = 0.01;
             
             while(running && doGraphics && player != null) {
-                player.input.Update(player);
-                player.Walk(poll);
-                foreach(Entity entity in physics.entities) {
-                    if(entity is ResourceFactory resource) {
-                        if(!player.input.Pressed("interact")) continue;
-                        resource.Interact(player, this);
+                if (player is Astronaut) {
+                    var player = (Astronaut)this.player;
+                    player?.input?.Update(player);
+                    player.Walk(poll);
+                    foreach (Entity entity in physics.entities) {
+                        if (entity is ResourceFactory resource) {
+                            if (player?.input?.Pressed("interact") == true)
+                                resource.Interact(player, this);
+                        }
                     }
                 }
-                
+
+                if (player is Spaceship) {
+                    var player = (Spaceship)this.player;
+                    player.input.Update(player);
+                    player.Thrust(poll);
+                    player.Rotate(poll);
+                }
+
                 if(Raylib.IsKeyDown(KeyboardKey.KEY_ESCAPE))
                     running = false;
                 

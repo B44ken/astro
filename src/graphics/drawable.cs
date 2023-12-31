@@ -32,22 +32,27 @@ class Square : Drawable {
 class Sprite : Drawable {
     int width;
     int height;
+    private string path;
+    bool isLoaded = false;
     Texture2D texture;
 
     public Sprite(int width, string path) {
-        texture = Raylib.LoadTexture(path);
-        if(texture.Width == 0) {
-            throw new Exception($"Failed to load texture {path}");
-        }
         this.width = width;
-        this.height = texture.Height * width / texture.Width;
+        this.path = path;
     }
-
-    public void LoadPath(string path) {
+    
+    void LoadTexture() {
         texture = Raylib.LoadTexture(path);
-    }
+        if (texture.Id == 0)
+            throw new FileNotFoundException("Texture not found: " + path);
 
+        width = texture.Width;
+        height = texture.Height;
+        isLoaded = true;
+    }
+    
     public void Draw(double x, double y, double scale) {
+        if(!isLoaded) LoadTexture();
         var screenScale = width * scale / texture.Width;
         var rayPos = new System.Numerics.Vector2((float)(x - width*scale), (float)(y - height*scale));
         Raylib.DrawTextureEx(texture, rayPos, 0, (float)screenScale, Color.WHITE);

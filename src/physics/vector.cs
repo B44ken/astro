@@ -5,9 +5,6 @@ class Vector {
 
     public Vector(params double[] values) {
         this.values = values.ToList();
-        // foreach (double value in values) {
-        //     this.values.Add(value);
-        // }
     }
 
     [JsonIgnore]
@@ -121,6 +118,17 @@ class Vector {
         double y = this.x * Math.Sin(theta) + this.y * Math.Cos(theta);
 
         return new Vector(x, y);
+    }
+
+    public double Angle() {
+        return Math.Atan(this.y / this.x);
+    }
+
+    public Vector SetAngle(double theta) {
+        return new Vector(
+            Length * Math.Cos(theta),
+            Length * Math.Sin(theta)
+        );
     }
 
     public override string ToString() {

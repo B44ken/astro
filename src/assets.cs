@@ -1,3 +1,3 @@
 class Assets {
-    private static string astronaut = "/home/brad/dev/astro/assets/astronaut.png";
+    public static string astronaut = "/home/brad/dev/astro/assets/astronaut.png";
 }

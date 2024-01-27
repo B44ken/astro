@@ -1,20 +1,26 @@
-﻿class Menu() {
+﻿using Raylib_cs;
+
+class Menu {
     public Action<int>? onSelect;
     public string title;
     public List<string> options;
     int selected = 0;
     
-    public void Draw() {
-        Console.Clear();
-        Console.WriteLine("  " + title + "\n");
+    public string GetText() {
+        string buffer = "";
+        buffer += "  " + title + "\n";
         for(var i = 0; i < options.Count; i++) {
             if(i == selected) {
-                Console.Write("> ");
+                buffer += "> ";
             } else {
-                Console.Write("  ");
+                buffer += "  ";
             }
-            Console.WriteLine(options[i]);
-            Console.ResetColor();
+            buffer += options[i] + "\n";
         }
+        return buffer;
+    }
+
+    public void HandleMouse() {
+        
     }
 }

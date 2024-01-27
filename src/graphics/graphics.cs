@@ -4,7 +4,8 @@ class Graphics {
     public Vector resolution = new Vector(1600, 900);
     public Vector center = new Vector(0, 0);
     public List<string> logs = new List<string>();
-    public int logLines = 5;
+    public Menu? activeMenu;
+    public int logLines = 10;
     public double zoom = 3;
 
     public Graphics() {
@@ -32,6 +33,14 @@ class Graphics {
 
         for(int i = 0; i < logs.Count; i++) {
             Raylib.DrawText(logs[i], 10, 10 + 20 * i, 20, Color.WHITE);
+        }
+
+        if(activeMenu != null) {
+            var text = activeMenu.GetText();
+            var width = Raylib.MeasureText(text, 20);
+            Raylib.DrawText(text, (int)(resolution.x - width) / 2, 100, 20, Color.WHITE);
+        } else {
+            // Raylib.DrawText("No active men   u", 100, 100, 20, Color.RED);
         }
 
         Raylib.EndDrawing();

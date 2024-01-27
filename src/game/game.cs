@@ -10,6 +10,12 @@ class Game {
     public GameClient? client;
     public Entity? player;
     public bool doGraphics = true;
+    bool didInit = false;
+
+    public void Init() {
+        didInit = true;
+        if(doGraphics) graphics = new Graphics();
+    }
 
     public void Serve() {
         server = new GameServer(this);
@@ -33,7 +39,7 @@ class Game {
     }
 
     public void Start() {
-        if(doGraphics) graphics = new Graphics();
+        if(!didInit) Init();
         bool running = true;
 
         // physics
@@ -49,9 +55,7 @@ class Game {
 
         // input
         Task.Run(() => {
-            
             var poll = 0.01;
-            
             while(running && doGraphics && player != null) {
                 if (player is Astronaut) {
                     var player = (Astronaut)this.player;
@@ -74,21 +78,25 @@ class Game {
 
                 if(Raylib.IsKeyDown(KeyboardKey.KEY_ESCAPE))
                     running = false;
-                
-                // zoom such that the ratio doubles/halves every second
-                if(Raylib.IsKeyDown(KeyboardKey.KEY_X))
-                    graphics.zoom /= Math.Pow(2, poll);
-                if(Raylib.IsKeyDown(KeyboardKey.KEY_Z))
-                    graphics.zoom *= Math.Pow(2, poll);
-                
-                if(Raylib.IsKeyDown(KeyboardKey.KEY_UP))
-                    graphics.center.y -= 600 * poll / graphics.zoom;
-                if(Raylib.IsKeyDown(KeyboardKey.KEY_DOWN))
-                    graphics.center.y += 600 * poll / graphics.zoom;
-                if(Raylib.IsKeyDown(KeyboardKey.KEY_LEFT))
-                    graphics.center.x -= 600 * poll / graphics.zoom;
-                if(Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT))
-                    graphics.center.x += 600 * poll / graphics.zoom;
+
+
+                var doCamera = false;
+                if(doCamera) {
+                    // zoom such that the ratio doubles/halves every second
+                    if(Raylib.IsKeyDown(KeyboardKey.KEY_X))
+                        graphics.zoom /= Math.Pow(2, poll);
+                    if(Raylib.IsKeyDown(KeyboardKey.KEY_Z))
+                        graphics.zoom *= Math.Pow(2, poll);
+                    
+                    if(Raylib.IsKeyDown(KeyboardKey.KEY_UP))
+                        graphics.center.y -= 600 * poll / graphics.zoom;
+                    if(Raylib.IsKeyDown(KeyboardKey.KEY_DOWN))
+                        graphics.center.y += 600 * poll / graphics.zoom;
+                    if(Raylib.IsKeyDown(KeyboardKey.KEY_LEFT))
+                        graphics.center.x -= 600 * poll / graphics.zoom;
+                    if(Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT))
+                        graphics.center.x += 600 * poll / graphics.zoom;
+                }                
                 
                 
                 Thread.Sleep((int)(poll * 1000));

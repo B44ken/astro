@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+
 class Astronaut : Entity {
     public Entity? attached;
     public Entity? jumpedFrom;
@@ -24,10 +27,10 @@ class Astronaut : Entity {
 
     public void Jump() {
         if (attached == null) return;
-        
         var normal = (position - attached.position).Unit();
-        position += normal * 0.2;
+        position += normal * 0.1;
         velocity += normal * jumpSpeed;
+        velocity = velocity.Unit() * jumpSpeed;
         attached = null;
         canMove = true;
         jumpedFrom = attached;
@@ -39,12 +42,16 @@ class Astronaut : Entity {
         if(attached != null) return false;
         var snap = 0.2;
         foreach(var entity in entities) {
-            if(entity == jumpedFrom || entity is Astronaut || entity.mass < 10_000 ||
-            (entity.position - position).Length < entity.radius + radius + snap) continue;
-            velocity = new Vector(0, 0);
-            attached = entity;
-            canMove = false;
-            return true;
+            if(entity == jumpedFrom || entity is Astronaut || entity.mass < 10_000) continue;
+            var dist = (entity.position - position).Length;
+            var rad = entity.radius + radius;
+            if(dist - rad < snap) {
+                Console.WriteLine("mass = " + entity.mass);
+                velocity = new Vector(0, 0);
+                attached = entity;
+                canMove = false;
+                return true;
+            }
         }
         return false;
     }

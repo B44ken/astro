@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Xml.Xsl;
 
 #pragma warning disable 8602
 #pragma warning disable 0649
@@ -43,6 +44,8 @@ class Physics {
                     
                     // wikipedia.org/wiki/Elastic_collision
                     // "Two-dimensional collision with two moving objects"
+
+                    const double restitution = 0.9;
                     
                     var v1 = entity.velocity;
                     var v2 = other.velocity;
@@ -53,7 +56,7 @@ class Physics {
                     
                     var vf = v1 - 2 * m2 / (m1+m2) * ((v1 - v2) * (x1 - x2))/Math.Pow((x1 - x2).Length, 2) * (x1 - x2);
                     
-                    entity.velocity = vf;
+                    entity.velocity = vf * restitution;
                 }
             }
         }

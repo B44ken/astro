@@ -29,7 +29,7 @@ class Vector {
         if(a.values.Count != b.values.Count) 
             throw new System.Exception("Vectors must be of the same length");
 
-        Vector result = new Vector();
+        var result = new Vector();
         for(int i = 0; i < a.values.Count; i++)
             result.values.Add(a.values[i] + b.values[i]);
 
@@ -40,7 +40,7 @@ class Vector {
         if(a.values.Count != b.values.Count) 
             throw new System.Exception("Vectors must be of the same length");
 
-        Vector result = new Vector();
+        var result = new Vector();
         for(int i = 0; i < a.values.Count; i++)
             result.values.Add(a.values[i] - b.values[i]);
 
@@ -48,7 +48,7 @@ class Vector {
     }
 
     static public Vector operator -(Vector a) {
-        Vector result = new Vector();
+        var result = new Vector();
         for(int i = 0; i < a.values.Count; i++)
             result.values.Add(-a.values[i]);
 
@@ -68,7 +68,7 @@ class Vector {
     }
 
     static public Vector operator *(Vector a, double b) {
-        Vector result = new Vector();
+        var result = new Vector();
         for(int i = 0; i < a.values.Count; i++)
             result.values.Add(a.values[i] * b);
 
@@ -76,7 +76,7 @@ class Vector {
     }
 
     static public Vector operator *(double a, Vector b) {
-        Vector result = new Vector();
+        var result = new Vector();
         for(int i = 0; i < b.values.Count; i++)
             result.values.Add(a * b.values[i]);
 
@@ -84,7 +84,7 @@ class Vector {
     }
 
     static public Vector operator /(Vector a, double b) {
-        Vector result = new Vector();
+        var result = new Vector();
         for(int i = 0; i < a.values.Count; i++)
             result.values.Add(a.values[i] / b);
 
@@ -92,7 +92,7 @@ class Vector {
     }
 
     static public Vector operator /(double a, Vector b) {
-        Vector result = new Vector();
+        var result = new Vector();
         for(int i = 0; i < b.values.Count; i++)
             result.values.Add(a / b.values[i]);
 
@@ -101,8 +101,10 @@ class Vector {
 
     public double Length {
         get {
-            return Math.Sqrt(values.ConvertAll(d => d*d).Sum());
+            // return Math.Sqrt(values.Select(d => d*d).Sum());
+            return Math.Sqrt(values.Sum(d => d*d));
         }
+        
         
     }
 
@@ -116,7 +118,7 @@ class Vector {
 
         double x = this.x * Math.Cos(theta) - this.y * Math.Sin(theta);
         double y = this.x * Math.Sin(theta) + this.y * Math.Cos(theta);
-
+        
         return new Vector(x, y);
     }
 
